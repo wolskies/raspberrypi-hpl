@@ -1,34 +1,127 @@
-# Compile and Running HowTo
+# HPL Test 
+---
+## Basic Configuration
+- Raspberry Pi 4 8GB
+- Ubuntu 20.04 server (64GB)
+- 256GB SD card
 
-**Note**: These scripts have been tested on Ubuntu 20.04 aarch64 on a Raspberry Pi 4 4GB. *Use at your own risk*
+*Note:  for some reason I put a POE card on the Pi, shouldn't affect this test*
 
-This is a collection of scripts and configuration that would
-allow to compile and run the benchmark in a consistent way
+## Setup
+Basic setup instructions can be found at:
+ <https://ubuntu.com/tutorials/how-to-install-ubuntu-on-your-raspberry-pi#1-overview>
 
-The following will clone, and compile all the stuff
+- Burn OS on SD card
+- Enable WiFi
+	- Locate "systemboot partition" on SD card
+	- edit "network-config" file
+	
+            wifis
+                wlan0:
+                dhcp4: true
+                optional: true
+                access-points:
+                'accesspointname':
+                password: "<wifi password>"
+		      
+      - Save file and remove from laptop
+      
+- Boot the Pi and finish configuration normally
+	- Login as ubuntu/ubuntu
+. System will require change of default password on first boot
+	- Create user and give sudo access
+	
+             sudo adduser username
+             sudo usermod -aG sudo username
+             
+	- Update the system.  *(Note: no harm if you skip this, the compile_all script will update the system when it is launched)*
+	
+             sudo apt update && sudo apt upgrade -y
+             
+	- Install libraspberrypi in order to be able to check throttled state. This requires the user to be added to the 'video' group to work.
+	
+	        sudo apt install -y libraspberrypi-bin
+            sudo usermod -aG video ed
+   
+## Compile HPL and Libraries
 
-First clone the repository
+*Note:  instructions for this section use scripts found at:
+<https://github.com/arif-ali/raspberrypi-hpl>
 
-    git clone https://gitlab.arif-ali.co.uk:8543/arif/raspberrypi-hpl.git
+- Clone the repository
 
-Change to the scripts directory
+        git clone https://github.com/arif-ali/raspberrypi-hpl.git
+        
+- Make the appropriate configuration changes (per preference) in the file scripts/CONFIG. *(Note:  I removed wpa_supplicant from SERVICES because my Pi was on WiFi and postfix because it's not installed)*. Current settings are:
+	
+	    export DOWNLOADS=~/Downloads
+	    export WORKDIR=~/rpi-hpl-workdir
+	    export RESULTSDIR=${WORKDIR}/results
+	    export SCRIPTSDIR=${PWD}
+	    export SERVICES="snap.lxd.daemon snap.lxd.daemon.unix.socket postfix systemd-timesyncd wpa_supplicant snapd snapd.apparmor.service systemd-resolved snapd.service snapd.socket"
+	    export COMMON_FLAGS="-mtune=cortex-a72"
+	    WRITE_OUT_FILE=0
 
-    cd raspberrypi-hpl/scripts
+- Compile mpich, OpenBLAS and hpl with the install script
 
-You will find many scripts, and a `CONFIG` file. The one script will compile everything for you, i.e. by running the following command
+        cd raspberrypi-hpl/scripts
+        ./compile_all.sh
+        
+- You may be required to enter the sudo password one or more times
 
-    ./compile_all.sh
+Need to remove 'wpa_supplicant' from CONFIG
 
-If at any time any of the parts fail, you can run the individual `make_*` scripts
+## Run
+- To run the test, type:
 
-In order, the `compile_all.sh` will compile the applications in the following order
+        ./run_job.sh
+        
+- Notes:
+	- The default 'run_job.sh' script, does not use 'mpiexec' to launch hpl.  In this mode, the PxQ=1 in HPL.dat.  (P=1 Q=1)
+	- The raspberry pi throttles at 80deg temperature.  If results are slow, check for throttling (after the fact) with the following command:
+	    
+	        vcgencmd get_throttled
+	      
+	- For tuning HPL.dat, a place to start is: <https://www.advancedclustering.com/act_kb/tune-hpl-dat-file/>.  The following resulted in XX Gflops:
+        
+            HPLinpack benchmark input file
+            Innovative Computing Laboratory, University of TennesseHPL.out      output file name (if any) 
+		6            device out (6=stdout,7=stderr,file)
+		1            # of problems sizes (N)
+		28800         Ns
+		1            # of NBs
+		192           NBs
+		0            PMAP process mapping (0=Row-,1=Column-major)
+		1            # of process grids (P x Q)
+		1            Ps
+		2 1          Qs
+		16.0         threshold
+		1            # of panel fact
+		2            PFACTs (0=left, 1=Crout, 2=Right)
+		1            # of recursive stopping criterium
+		4            NBMINs (>= 1)
+		1            # of panels in recursion
+		2            NDIVs
+		1            # of recursive panel fact.
+		1            RFACTs (0=left, 1=Crout, 2=Right)
+		1            # of broadcast
+		1            BCASTs (0=1rg,1=1rM,2=2rg,3=2rM,4=Lng,5=LnM)
+		1            # of lookahead depth
+		1            DEPTHs (>=0)
+		2            SWAP (0=bin-exch,1=long,2=mix)
+		64           swapping threshold
+		0            L1 in (0=transposed,1=no-transposed) form
+		0            U  in (0=transposed,1=no-transposed) form
+		1            Equilibration (0=no,1=yes)
+		8            memory alignment in double (> 0)
+		##### This line (no. 32) is ignored (it serves as a separator). ######
+		0                               Number of additional problem sizes for PTRANS
+		1200 10000 30000                values of N
+		0                               number of additional blocking sizes for PTRANS
+		40 9 8 13 13 20 16 32 64        values of NB
 
-1. mpich
-2. OpenBLAS
-3. HPL
+   
+- Run with mpiexec
 
-If for any reason you need to change any of the compilation flags or options, you can either udpate them in the `CONFIG` file or the corresponding `make_*.sh` script. For HPL, you will need to update `config/Make.rpi4_mpich` for any extra flags that you may require
+        mpiexec -n <# of processes> -ppn <# of processes per node> -f <hostfile> myprog.exe
 
-Finallu, once you're happy that the relevant applications have compiled, then we can run HPL using the following command
-
-    ./run_job.sh
