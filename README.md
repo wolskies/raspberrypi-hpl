@@ -57,8 +57,7 @@ See Resource #1 for additional information
    
 ### Compile HPL and Libraries
 
-*Note:  instructions for this section use scripts found at:
-<https://github.com/arif-ali/raspberrypi-hpl>
+This section based on scripts from Resource #2:
 
 - Clone the repository
 
