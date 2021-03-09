@@ -18,7 +18,6 @@ The intent of this project is to build on existing work to provide a fast and re
 - Ubuntu 20.04 server (64GB)
 - 256GB SD card
 - Ethernet
-- *For convenience, I may try powering via POE hat, will provide details if successful*
 
 ### Basic Configuration 2 (8 X Raspberry Pi 4 Cluster)
 
@@ -108,4 +107,5 @@ See Resource #1 for additional information
 - Run with mpiexec
 
         mpiexec -n <# of processes> -ppn <# of processes per node> -f <hostfile> myprog.exe
+
 
