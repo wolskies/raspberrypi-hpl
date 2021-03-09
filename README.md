@@ -1,11 +1,17 @@
 # HPL Test 
 ---
-## Basic Configuration
+The intent of this project is to build on existing work to provide a fast and repeatable process  to configure and run the HPL benchmark on single and clustered Raspberry Pi 4's 
+### Basic Configuration #1 (Single Node)
 - Raspberry Pi 4 8GB
 - Ubuntu 20.04 server (64GB)
 - 256GB SD card
+- Ethernet
+- *For convenience, I may try powering via POE hat, will provide details if successful*
 
-*Note:  for some reason I put a POE card on the Pi, shouldn't affect this test*
+### Basic Configuration #2 (8 X Raspberry Pi 4 Cluster)
+
+- 8 x Raspberry Pi 4 4GB
+- 
 
 ## Setup
 Basic setup instructions can be found at:
