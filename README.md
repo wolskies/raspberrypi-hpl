@@ -62,7 +62,7 @@ See Resource #1 for additional information
 
 - Clone the repository
 
-        git clone https://github.com/arif-ali/raspberrypi-hpl.git
+        git clone https://github.com/wolskies/raspberrypi-hpl.git
         
 - Make the appropriate configuration changes (per preference) in the file scripts/CONFIG. Current settings are:
 	
