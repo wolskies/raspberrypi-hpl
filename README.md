@@ -18,6 +18,7 @@ The intent of this project is to build on existing work to provide a fast and re
 - Ubuntu 20.04 server (64GB)
 - 256GB SD card
 - Ethernet
+- Flirc case (passive cooling)
 
 ### Basic Configuration 2 (8 X Raspberry Pi 4 Cluster)
 
@@ -81,7 +82,7 @@ This section based on scripts from Resource #2:
 - You may be required to enter the sudo password one or more times
 - When the script finishes mpich, OpenBLAS and HPL will be installed in the ~/rpi-hpl-workdir directory
 
-### Run the Test
+### Run the Tests
 
 - Before you begin:
 	- HPL.dat is located in the ~/raspberrypi-hpl/configs directory
@@ -90,15 +91,24 @@ This section based on scripts from Resource #2:
 		- Results get stored in the ~/rpi-hpl-workdir/results directory
 	- All of these folders can be changed in the CONFIG file (see previous section)
 
+#### Test #1: Calling xhpl
+This method calls xhpl directly via the run_xhpl.sh script.  For the test to run, the HPL.dat file must be configured such that the P x Q = 1.  That is, P=1 and Q=1.  Sample HPL.dat files are found in the configs directory with the ending ".xhpl". Copy one of these to HPL.dat:
+
+	 - HPL.dat.arif-ali.xhpl
+	 - HPLdat.actune.xhpl
+
 - To run the test, type:
 
         ./run_job.sh
         
 - Notes:
-	- The default 'run_job.sh' script, does not use 'mpiexec' to launch hpl.  In this mode, the PxQ=1 in HPL.dat.  (P=1 Q=1)
+
 	- The raspberry pi throttles at 80deg temperature.  If results are slow, check for throttling (after the fact) with the following command:
 	    
 	        vcgencmd get_throttled
+	
+	- A result other than '0x0' means the CPU throttled due to temperature
+	- With the Flirc case, my experience with the RPi4 
 	      
 
 
