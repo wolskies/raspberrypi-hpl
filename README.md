@@ -77,6 +77,13 @@ This section based on scripts from Resource #2:
 - Compile mpich, OpenBLAS and hpl with the install script
 
         cd raspberrypi-hpl/scripts
+
+	- Optional:  Each individual "make" script can be configured for a specific version. The defaults are:
+		- make_mpich.sh: version 3.3.2
+		- make_openblas.sh: version: develop
+		- make_hpl.sh: version 2.3
+	- Use nano to edit these scripts if a different version is required
+
         ./compile_all.sh
         
 - You may be required to enter the sudo password one or more times
