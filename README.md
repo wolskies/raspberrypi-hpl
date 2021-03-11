@@ -1,5 +1,5 @@
 # HPL Test 
----
+
 The intent of this project is to build on existing work to provide a fast and repeatable process  to configure and run the HPL benchmark on single and clustered Raspberry Pi 4's 
 
 **Resources & Credits**:
@@ -38,7 +38,7 @@ The intent of this project is to build on existing work to provide a fast and re
 See Resource #1 for additional information
 
 - Download OS and burn to  SD card (Raspberry Pi Imager and/or Etcher)
-      
+  
 - Boot the Pi and initial configuration
 	- Login as ubuntu/ubuntu
 	- System will require change of default password on first boot
@@ -46,16 +46,16 @@ See Resource #1 for additional information
 	
              sudo adduser username
              sudo usermod -aG sudo username
-             
+         
 - Update the system.  *(Note: no harm if you skip this, the compile_all script will update the system when it is launched)*
 	
              sudo apt update && sudo apt upgrade -y
-             
+         
 - Install libraspberrypi in order to be able to check throttled state. This requires the user to be added to the 'video' group to work
 	
 	        sudo apt install -y libraspberrypi-bin
             sudo usermod -aG video ed
-   
+
 ### Compile HPL and Libraries
 
 This section based on scripts from Resource #2:
@@ -63,7 +63,7 @@ This section based on scripts from Resource #2:
 - Clone the repository
 
         git clone https://github.com/wolskies/raspberrypi-hpl.git
-        
+    
 - Make the appropriate configuration changes (per preference) in the file scripts/CONFIG. Current settings are:
 	
 	    export DOWNLOADS=~/Downloads
@@ -85,7 +85,7 @@ This section based on scripts from Resource #2:
 	- Use nano to edit these scripts if a different version is required
 
         ./compile_all.sh
-        
+    
 - You may be required to enter the sudo password one or more times
 - When the script finishes mpich, OpenBLAS and HPL will be installed in the ~/rpi-hpl-workdir directory
 
@@ -107,19 +107,21 @@ This method calls xhpl directly via the run_xhpl.sh script.  For the test to run
 - To run the test, type:
 
         ./run_job.sh
-        
+    
 - Notes:
 
 	- The raspberry pi throttles at 80deg temperature.  If results are slow, check for throttling (after the fact) with the following command:
-	    
+	  
 	        vcgencmd get_throttled
 	
 	- A result other than '0x0' means the CPU throttled due to temperature
 	- With the Flirc case, my experience with the RPi4 
 	      
 
+#### Test #2: Launching with mpiexec
 
-   
+This method calls xhpl directly via the run_xhpl.sh script.
+
 - Run with mpiexec
 
         mpiexec -n <# of processes> -ppn <# of processes per node> -f <hostfile> myprog.exe
