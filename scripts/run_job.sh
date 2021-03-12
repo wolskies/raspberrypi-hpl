@@ -22,7 +22,7 @@ if [ ${WRITE_OUT_FILE} -eq 1 ] ; then
   echo Results ...
   echo
 
-  grep WR.*17 ${RESULTSDIR}/HPL.out.${TIMESTAMP}
+  grep WR.*11 ${RESULTSDIR}/HPL.out.${TIMESTAMP}
 
 else
   ${COMMAND}

@@ -115,8 +115,13 @@ This method calls xhpl directly via the run_xhpl.sh script.  For the test to run
 	        vcgencmd get_throttled
 	
 	- A result other than '0x0' means the CPU throttled due to temperature
-	- With the Flirc case, my experience with the RPi4 
-	      
+	- With the Flirc case, my RPi4 didn't exceed 71 deg on a test
+
+- To run the test multiple times (in this example 10), type:
+
+        for i in {1..10}; do ./run_job.sh; done
+
+    - The only problem with this method that I haven't figured out, is that you will need to type the sudo password in for each iteration.  (Thought:  try sudo su- then try the command)
 
 #### Test #2: Launching with mpiexec
 
