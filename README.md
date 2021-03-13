@@ -184,9 +184,9 @@ This method calls `xhpl` via `mpiexec` using the `run_mpi.sh` script.  In this c
 This method, surprisingly, gave the fastest and most consistent results.  
 
 	Finished     10 tests with the following results:
-       	  10 tests completed and passed residual checks,
-       	  0 tests completed and failed residual checks,
-       	  0 tests skipped because of illegal input values.
+	             10 tests completed and passed residual checks,
+	              0 tests completed and failed residual checks,
+	              0 tests skipped because of illegal input values.
 	--------------------------------------------------------------------------------
 
 	End of Tests.
