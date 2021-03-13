@@ -184,9 +184,9 @@ This method calls `xhpl` via `mpiexec` using the `run_mpi.sh` script.  In this c
 This method, surprisingly, gave the fastest and most consistent results.  
 
 	Finished     10 tests with the following results:
-       	  	     10 tests completed and passed residual checks,
-       	  	      0 tests completed and failed residual checks,
-       	 	      0 tests skipped because of illegal input values.
+       	  10 tests completed and passed residual checks,
+       	  0 tests completed and failed residual checks,
+       	  0 tests skipped because of illegal input values.
 	--------------------------------------------------------------------------------
 
 	End of Tests.
@@ -239,7 +239,7 @@ Results were disappointing. Launching with 4 processes was significantly slower 
 	    over_voltage=5
 	    arm_freq=2000
 	   
-####Test #1: Calling xhpl
+#### Test #1: Calling xhpl
 
 Overclocking at this point turned out to be a dismal failure.  On the first run, after seeing eye-popping numbers over 17Gflops, performance dropped off rapidly.  A quick check of `vcgencmd get_throttled` showed the RPi was throttling.  Off to the drawing board to get a better cooling solution for overclocking:
 
