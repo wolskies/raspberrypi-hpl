@@ -13,6 +13,8 @@ for mount in $(df -h | grep loop.*snap | awk '{print $6}'); do sudo umount $moun
 
 cd ${SCRIPTSDIR}/../configs
 
+cp HPL.dat.xhpl HPL.dat
+
 COMMAND="${WORKDIR}/hpl-2.3/bin/rpi4-mpich/xhpl"
 
 if [ ${WRITE_OUT_FILE} -eq 1 ] ; then
@@ -22,7 +24,9 @@ if [ ${WRITE_OUT_FILE} -eq 1 ] ; then
   echo Results ...
   echo
 
-  grep WR.*11 ${RESULTSDIR}/HPL.out.${TIMESTAMP}
+  grep WR11.*28 ${RESULTSDIR}/HPL.out.${TIMESTAMP} | tee -a ${RESULTSDIR}/HPL.out.${TIMESTAMP}
+  vcgencmd measure_temp | tee -a ${RESULTSDIR}/HPL.out.${TIMESTAMP}
+  vcgencmd get_throttled | tee -a ${RESULTSDIR}/HPL.out.${TIMESTAMP}
 
 else
   ${COMMAND}

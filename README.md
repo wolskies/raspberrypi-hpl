@@ -1,6 +1,6 @@
 # HPL Test 
 
-The intent of this project is to build on existing work to provide a fast and repeatable process  to configure and run the HPL benchmark on single and clustered Raspberry Pi 4's 
+The intent of this project is to build on existing work to provide a fast and repeatable process  to configure and run the HPL benchmark on a single Raspberry Pi 4
 
 **Resources & Credits**:
 
@@ -13,28 +13,34 @@ The intent of this project is to build on existing work to provide a fast and re
 4. Tuning the HPL.dat file:
 	- <https://www.advancedclustering.com/act_kb/tune-hpl-dat-file/>
 	
-### Basic Configuration 1 (Single Node)
+### Basic Configuration 1 
 - Raspberry Pi 4 8GB
 - Ubuntu 20.04 server (64GB)
 - 256GB SD card
 - Ethernet
 - Flirc case (passive cooling)
+- No overclock
 
-### Basic Configuration 2 (8 X Raspberry Pi 4 Cluster)
+### Basic Configuration 2 
+- Raspberry Pi 4 8GB
+- Ubuntu 20.04 server (64GB)
+- 256GB SD card
+- Ethernet
+- Flirc case (passive cooling)
+- Overclocked
 
-- 8 Raspberry Pi 4 4GB. Each with:
-	- Ubuntu 20.04 server (64GB)
-	- 256GB SD card
-	- POE HAT (LOVEPI POE HAT for Rpi4)
-- Cloudlet labs 8 slot cluster case
-- 8 Port POE gigabit ethernet hub (local network for cluster)
-- Node 1 configured with wifi/routing for LAN access to cluster
-- 4 case fans (connected to odd numbered nodes), regulated by PWM (see resource #2)
+### Basic Configuration 3 
+- Raspberry Pi 4 8GB
+- Ubuntu 20.04 server (64GB)
+- 256GB SD card
+- Ethernet
+- TBD case
+- Overclocked
 
 
-## Single-Node Testing
+## Set-Up and Testing
 
-### Basic configuration
+### Configuring the Raspberry Pi
 See Resource #1 for additional information
 
 - Download OS and burn to  SD card (Raspberry Pi Imager and/or Etcher)
@@ -99,14 +105,11 @@ This section based on scripts from Resource #2:
 	- All of these folders can be changed in the CONFIG file (see previous section)
 
 #### Test #1: Calling xhpl
-This method calls xhpl directly via the run_xhpl.sh script.  For the test to run, the HPL.dat file must be configured such that the P x Q = 1.  That is, P=1 and Q=1.  Sample HPL.dat files are found in the configs directory with the ending ".xhpl". Copy one of these to HPL.dat:
-
-	 - HPL.dat.arif-ali.xhpl
-	 - HPLdat.actune.xhpl
+This method calls xhpl directly via the run_xhpl.sh script.  For the test to run, the HPL.dat file must be configured such that the P x Q = 1.  That is, P=1 and Q=1.  Sample HPL.dat files are found in the configs directory with the ending ".xhpl". This script copies the HPL.dat.xhpl to HPL.dat to run the test.  Make any modifications to HPL.dat.xhpl
 
 - To run the test, type:
 
-        ./run_job.sh
+        ./run_xhpl.sh
     
 - Notes:
 
@@ -117,18 +120,41 @@ This method calls xhpl directly via the run_xhpl.sh script.  For the test to run
 	- A result other than '0x0' means the CPU throttled due to temperature
 	- With the Flirc case, my RPi4 didn't exceed 71 deg on a test
 
-- To run the test multiple times (in this example 10), type:
+- The included HPL.dat.hxpl specifies 2 problem sizes (N) and 5 NBs.  This will result in the test running 10 times.  An alternate way to run it to modify the HPL.dat.xhpl to specify 1 N and 1 NB, and run the test 10 times with the following:
 
-        for i in {1..10}; do ./run_job.sh; done
+        for i in {1..10}; do ./run_xhpl.sh; done
 
-    - The only problem with this method that I haven't figured out, is that you will need to type the sudo password in for each iteration.  (Thought:  try sudo su- then try the command)
+    - Downside of this method is that you may have to type in the sudo command multiple times as it repeats the entire script - including disabling unnecessary services
 
-#### Test #2: Launching with mpiexec
+#### Test #2: Launching with mpiexec (n=1)
 
-This method calls xhpl directly via the run_xhpl.sh script.
+This method calls xhpl directly via the run_xhpl.sh script.  To get an 'apples to apples' comparison with the previous method, I first launched mpiexec specifying a single process:
+- Use the HPL.dat from the previous test:
+        cd ~/raspberrypi-hpl/configs
+        cp HPL.dat.xhpl HPL.dat
+        cd ..
+        cd scripts
+- Edit the run_mpi.sh script change the execute line to read:
+        COMMAND="/opt/mpich/3.3.2/bin/mpiexec -n 1 ${WORKDIR}/hpl-2.3/bin/rpi4-mpich/xhpl"
+- Run with mpiexec (# processes = 1)
+        ./run_mpi.sh
+- This will run 10 times, just as it did in Test #1
 
-- Run with mpiexec
+#### Test #3: Launching with mpiexec (n=4)
 
-        mpiexec -n <# of processes> -ppn <# of processes per node> -f <hostfile> myprog.exe
+This method calls xhpl directly via the run_xhpl.sh script.  To get an 'apples to apples' comparison with the previous method, I first launched mpiexec specifying a single process:
+
+- Use the HPL.dat.mpiexec:
+        cd ~/raspberrypi-hpl/configs
+        cp HPL.dat.mpiexec HPL.dat
+        cd ..
+        cd scripts
+- Edit the run_mpi.sh script change the execute line to read:
+        COMMAND="/opt/mpich/3.3.2/bin/mpiexec -n 4 ${WORKDIR}/hpl-2.3/bin/rpi4-mpich/xhpl"
+- Run with mpiexec (# processes = 4)
+        ./run_mpi.sh
+- This will run 10 times, just as it did in Test #1 and #2
+
+## Test Results
 
 
