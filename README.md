@@ -12,6 +12,8 @@ The intent of this project is to build on existing work to provide a fast and re
 	- <https://github.com/arif-ali/raspberrypi-hpl>
 4. Tuning the HPL.dat file:
 	- <https://www.advancedclustering.com/act_kb/tune-hpl-dat-file/>
+5. Turning off swappiness
+	- <https://www.howtoforge.com/tutorial/linux-swappiness/>
 	
 ### Basic Configuration 1 
 - Raspberry Pi 4 8GB
@@ -50,18 +52,22 @@ See Resource #1 for additional information
 	- System will require change of default password on first boot
 - Create user and give sudo access
 	
-            sudo adduser username
-            sudo usermod -aG sudo username
+        sudo adduser username
+        sudo usermod -aG sudo username
          
 - Update the system.  *(Note: no harm if you skip this, the `compile_all` script will update the system when it is launched)*
 	
-            sudo apt update && sudo apt upgrade -y
+        sudo apt update && sudo apt upgrade -y
          
 - Install libraspberrypi in order to be able to check throttled state. This requires the user to be added to the 'video' group to work
 	
-	        sudo apt install -y libraspberrypi-bin
-            sudo usermod -aG video ed
+        sudo apt install -y libraspberrypi-bin
+        sudo usermod -aG video ed
 
+- Turn down/off swappines
+
+        sudo sysctl vm.swappiness=10
+	          
 ### Compile HPL and Libraries
 
 This section based on scripts from Resource #2:
@@ -88,14 +94,14 @@ This section based on scripts from Resource #2:
 
 		- Each individual "make" script can be configured for a specific version. Currently specified versions are:
 		
-			- make_mpich.sh: version 3.3.2
-			- make_openblas.sh: version: develop
-			- make_hpl.sh: version 2.3
+			- `make_mpich.sh`: version 3.3.2
+			- `make_openblas.sh`: version: develop
+			- `make_hpl.sh`: version 2.3
 	
 	- Use nano to edit these scripts if a different version is required
 	- Launch the install script
 	
-            ./install.sh
+            ./compile_all.sh
         
 	- You may be required to enter the sudo password one or more times
 	- When the script finishes mpich, OpenBLAS and HPL will be installed in the `~/rpi-hpl-workdir` directory
@@ -178,15 +184,37 @@ This method calls `xhpl` via `mpiexec` using the `run_mpi.sh` script.  In this c
 ### Basic Configuration #1 (8GB, No Overclocking)
 
 #### Test #1: Calling xhpl
-
-
-#### Test #2: Launching with mpiexec (n=1)
-This method, surprisingly, gave the fastest and most consistent results.  
+This method gave me much faster results than the **13.8 Gflops** I was expecting: 
 
 	Finished     10 tests with the following results:
 	             10 tests completed and passed residual checks,
 	              0 tests completed and failed residual checks,
-	              0 tests skipped because of illegal input values.
+	              0 tests skipped because of illegal input values.	
+	--------------------------------------------------------------------------------
+
+	End of Tests.
+	================================================================================
+
+	Results ...
+	
+	WR11C2R4       28800   192     1     1            1134.61             1.4037e+01
+	WR11C2R4       28800   192     1     1            1134.90             1.4033e+01
+	WR11C2R4       28800   192     1     1            1134.18             1.4042e+01
+	WR11C2R4       28800   192     1     1            1135.64             1.4024e+01
+	WR11C2R4       28800   192     1     1            1137.95             1.3996e+01
+	WR11C2R4       28800   192     1     1            1137.41             1.4002e+01
+	WR11C2R4       28800   192     1     1            1138.46             1.3990e+01
+	WR11C2R4       28800   192     1     1            1136.47             1.4014e+01
+	WR11C2R4       28800   192     1     1            1136.35             1.4015e+01
+	WR11C2R4       28800   192     1     1            1135.75             1.4023e+01
+	temp=66.7'C
+	throttled=0x0
+
+
+#### Test #2: Launching with mpiexec (n=1)
+This method, surprisingly, gave the fastest and most consistent results. Topping out at **14.22 Gflops**  
+
+
 	--------------------------------------------------------------------------------
 
 	End of Tests.
@@ -208,9 +236,9 @@ This method, surprisingly, gave the fastest and most consistent results.
 Results were disappointing. Launching with 4 processes was significantly slower than all of the previous results (but fairly consistent).  Note that the flatter `P * Q` matrix of `1 * 4` performed best:
 
 	Finished     10 tests with the following results:
-       	  	     10 tests completed and passed residual checks,
-       	  	      0 tests completed and failed residual checks,
-       	 	      0 tests skipped because of illegal input values.
+	             10 tests completed and passed residual checks,
+	              0 tests completed and failed residual checks,
+	              0 tests skipped because of illegal input values.
 	--------------------------------------------------------------------------------
 
 	End of Tests.
