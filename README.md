@@ -94,11 +94,14 @@ This section based on scripts from Resource #2:
 
 		- Each individual "make" script can be configured for a specific version. Currently specified versions are:
 		
-			- `make_mpich.sh`: version 3.3.2
+			- `make_mpich.sh: mpich 3.4.1`
 			- `make_openblas.sh`: version: develop
 			- `make_hpl.sh`: version 2.3
 	
 	- Use nano to edit these scripts if a different version is required
+	
+		- Note:  in the case of mpich, you need to edit `Make.rpi4-mpich` in the `configs` directory.  Look for `MPDir` and make sure it matches your `mpich` version/location.
+	
 	- Launch the install script
 	
             ./compile_all.sh

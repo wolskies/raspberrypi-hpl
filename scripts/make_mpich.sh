@@ -19,6 +19,6 @@ export FCFLAGS=${COMMON_FLAGS}
 export LDFLAGS=${COMMON_FLAGS}
 export FFLAGS="-w -fallow-argument-mismatch -O2"
 
-./configure --prefix=/opt/${package}/${version}
+./configure --with-device=ch3 --prefix=/opt/${package}/${version}
 make -j 3 
 sudo make -j 3 install

@@ -32,7 +32,7 @@ else
   ${COMMAND}
 fi
 
-COMMAND="/opt/mpich/3.3.2/bin/mpiexec -n 1 ${WORKDIR}/hpl-2.3/bin/rpi4-mpich/xhpl"
+COMMAND="/opt/mpich/3.4.1/bin/mpiexec -n 1 ${WORKDIR}/hpl-2.3/bin/rpi4-mpich/xhpl"
 
 if [ ${WRITE_OUT_FILE} -eq 1 ] ; then
   ${COMMAND} | tee -a ${RESULTSDIR}/HPL.out.${TIMESTAMP}
@@ -51,7 +51,7 @@ fi
 
 cp HPL.dat.mpiexec HPL.dat
 
-COMMAND="/opt/mpich/3.3.2/bin/mpiexec -n 4 ${WORKDIR}/hpl-2.3/bin/rpi4-mpich/xhpl"
+COMMAND="/opt/mpich/3.4.1/bin/mpiexec -n 4 ${WORKDIR}/hpl-2.3/bin/rpi4-mpich/xhpl"
 
 if [ ${WRITE_OUT_FILE} -eq 1 ] ; then
   ${COMMAND} | tee -a ${RESULTSDIR}/HPL.out.${TIMESTAMP}
