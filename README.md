@@ -53,21 +53,36 @@ See Resource #1 for additional information
 - Create user and give sudo access
 	
         sudo adduser username
-        sudo usermod -aG sudo username
+        sudo usermod -aG sudo <username>
          
 - Update the system.  *(Note: no harm if you skip this, the `compile_all` script will update the system when it is launched)*
 	
         sudo apt update && sudo apt upgrade -y
          
-- Install libraspberrypi in order to be able to check throttled state. This requires the user to be added to the 'video' group to work
+- Install libraspberrypi in order to be able to check throttled state. This requires the user to be added to the `video` group to work
 	
         sudo apt install -y libraspberrypi-bin
-        sudo usermod -aG video ed
+        sudo usermod -aG video <username>
+
+- Change the hostname
+
+        sudo hostnamectl set-hostname <yourhostname>
+        sudo nano /etc/hosts
+	add a second line (under `localhost`) that reads:
+	
+	    127.0.0.1	<yourhostname>
 
 - Turn down/off swappines
 
         sudo sysctl vm.swappiness=10
-	          
+       
+- To make this change permanent:
+
+        sudo nano /etc/sysct.conf
+	at the very end add:
+	
+	    vm.swappiness=10
+	      
 ### Compile HPL and Libraries
 
 This section based on scripts from Resource #2:
