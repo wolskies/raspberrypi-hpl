@@ -82,6 +82,12 @@ See Resource #1 for additional information
 	at the very end add:
 	
 	    vm.swappiness=10
+	    
+- Finally, disable wifi and bluetooth to eliminate unnecessary processes:
+	
+        sudo systemctl disable wpa_supplicant
+        sudo systemctl disable bluetooth
+        sudo systemctl disable hciuart
 	      
 ### Compile HPL and Libraries
 
